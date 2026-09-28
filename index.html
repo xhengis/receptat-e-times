@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#5b2232">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Receptat">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Fletorja e Receptave</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Literata:opsz,wght@7..72,400;7..72,600&display=swap">
+<style>
+/* Layout: leather-bound notebook — burgundy header with brass corner, ruled-paper recipe cards, fixed bottom category pills like the duas book. */
+:root{
+  --paper:#f3f4f6; --card:#ffffff; --rule:#dde2ea; --fg:#1e2230; --muted:#687085;
+  --ink:#233384; --ink-soft:#e7eaf8; --leather:#5b2232; --leather-fg:#f6ecee; --brass:#b8913a;
+  --del:#9aa0ad;
+  --f-hand:"Kalam","Segoe Print","Comic Sans MS",cursive;
+  --f-body:"Literata",Georgia,"Times New Roman",serif;
+  --f-ui:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#14161c; --card:#1c1f28; --rule:#2c313d; --fg:#e7e9ef; --muted:#9aa1b1;
+  --ink:#a9b7ff; --ink-soft:#252b45; --leather:#3b1520; --leather-fg:#f4e6e9; --brass:#caa24e; --del:#6d7383; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#14161c; --card:#1c1f28; --rule:#2c313d; --fg:#e7e9ef; --muted:#9aa1b1;
+  --ink:#a9b7ff; --ink-soft:#252b45; --leather:#3b1520; --leather-fg:#f4e6e9; --brass:#caa24e; --del:#6d7383; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--fg);font-family:var(--f-body);font-size:16px;line-height:1.6}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--leather);color:var(--leather-fg);
+  padding:14px 16px 12px;box-shadow:0 2px 10px rgba(0,0,0,.18);overflow:hidden}
+header::after{content:"";position:absolute;top:0;right:0;width:26px;height:26px;background:linear-gradient(225deg,var(--brass) 50%,transparent 50%)}
+.hwrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.brand{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+h1{font-family:var(--f-hand);font-weight:700;font-size:1.7rem;line-height:1.1;margin:0}
+.count{font-family:var(--f-ui);font-size:.78rem;opacity:.8;white-space:nowrap;letter-spacing:.03em}
+.tools{display:flex;gap:8px}
+#q{flex:1;min-width:0;font:inherit;font-family:var(--f-ui);font-size:.95rem;padding:9px 12px;border-radius:10px;border:0;
+  background:rgba(255,255,255,.14);color:var(--leather-fg)}
+#q::placeholder{color:var(--leather-fg);opacity:.65}
+#q:focus{outline:2px solid var(--brass);outline-offset:1px}
+#wake{font-family:var(--f-ui);font-size:.8rem;border:1px solid rgba(255,255,255,.3);background:transparent;color:var(--leather-fg);
+  border-radius:10px;padding:0 10px;cursor:pointer;white-space:nowrap}
+#wake[aria-pressed="true"]{background:var(--brass);border-color:var(--brass);color:#2a1a08}
+
+main{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:14px 110px;display:flex;flex-direction:column;gap:14px}
+.sec{font-family:var(--f-ui);font-size:.74rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);
+  margin:14px 2px 0;display:flex;align-items:center;gap:10px}
+.sec::after{content:"";flex:1;height:1px;background:var(--rule)}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.card summary{list-style:none;cursor:pointer;padding:12px 16px;display:flex;align-items:center;gap:10px}
+.card summary::-webkit-details-marker{display:none}
+.card summary:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
+.card h2{font-family:var(--f-hand);font-weight:700;color:var(--ink);font-size:1.3rem;line-height:1.25;margin:0;flex:1;min-width:0;text-wrap:balance}
+.chev{width:10px;height:10px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .2s;flex:none;margin-top:-4px}
+details[open] .chev{transform:rotate(-135deg);margin-top:4px}
+.body{padding:2px 16px 16px;border-top:1px dashed var(--rule);display:flex;flex-direction:column;gap:12px}
+.body ul{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column}
+.body li{padding:6px 0 6px 18px;border-bottom:1px solid var(--rule);position:relative}
+.body li::before{content:"";position:absolute;left:3px;top:.95em;width:6px;height:6px;border-radius:50%;background:var(--ink)}
+.body p{margin:0}
+.lbl{font-weight:600;color:var(--ink)}
+.note{font-style:italic;color:var(--muted);font-size:.92em}
+del{color:var(--del)}
+.unc{color:var(--muted);font-family:var(--f-ui);font-size:.85em}
+.sig{font-family:var(--f-hand);color:var(--muted);text-align:right}
+.tag{font-family:var(--f-ui);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);flex:none}
+.empty{text-align:center;color:var(--muted);padding:40px 0;font-family:var(--f-ui)}
+
+.units{background:var(--ink-soft);border-radius:12px;padding:14px 16px;font-size:.92rem}
+.units h3{font-family:var(--f-hand);color:var(--ink);font-size:1.15rem;margin:0 0 6px}
+.units dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0}
+.units dt{font-weight:600}.units dd{margin:0;color:var(--muted);min-width:0}
+
+nav{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--card);border-top:1px solid var(--rule);
+  padding:10px 0 calc(10px + env(safe-area-inset-bottom,0px))}
+.pills{display:flex;gap:8px;overflow-x:auto;padding-inline:16px;scrollbar-width:none;max-width:720px;margin:0 auto}
+.pills::-webkit-scrollbar{display:none}
+.pill{flex:none;font-family:var(--f-ui);font-size:.86rem;padding:8px 14px;border-radius:999px;border:1px solid var(--rule);
+  background:var(--paper);color:var(--fg);cursor:pointer;white-space:nowrap}
+.pill b{font-weight:600;color:var(--muted);margin-left:4px;font-variant-numeric:tabular-nums}
+.pill[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--card)}
+.pill[aria-pressed="true"] b{color:inherit;opacity:.75}
+.pill:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.chev{transition:none}}
+</style>
+
+</head>
+<body>
+<header>
+  <div class="hwrap">
+    <div class="brand"><h1>Fletorja e Receptave</h1><span class="count" id="count"></span></div>
+    <div class="tools">
+      <input id="q" type="search" placeholder="Kërko receptën ose çka ka mrena…" autocomplete="off" aria-label="Kërko">
+      <button id="wake" type="button" aria-pressed="false" title="Mbaje ekranin ndezun kur je tu gatu">Mos e fik ekranin</button>
+    </div>
+  </div>
+</header>
+
+<main id="list"></main>
+
+<nav aria-label="Llojet"><div class="pills" id="pills"></div></nav>
+
+<script>
+const CATS=[
+ ["buke","Buk e kifle","Buk, pogaçe edhe kifle"],
+ ["pite","Pite","Pite edhe štrudla"],
+ ["gjelle","Gjella","Gjella"],
+ ["pica","Pica","Pica"],
+ ["turshi","Turshi","Turshi"],
+ ["tatli","Tatli","Tatli, havëll edhe tjera me sherbet"],
+ ["torte","Torta","Torta edhe keksa"],
+ ["pjekje","Pa pjek","Torta pa pjek"],
+ ["kolace","Kolaça","Kolaça edhe bombica"],
+ ["tjera","Tjera","Tjera"]
+];
+// R(category, title, ingredient lines, text paragraphs, signature)
+const D=[];const R=(c,t,i,x,s)=>D.push({c,t,i:i?i.trim().split("\n"):[],x:x?x.trim().split("\n"):[],s});
+
+R("buke","Pogaçe",`2 voe
+1 bardak zejtin
+1 peciv
+Sod buke
+1 far buke
+Ndrysh uj të ftoht ndrysh jogurt
+Kryp
+Mill`);
+R("buke","Simita",`1 litër tamël
+3 voe
+1 got zejtin të ujit
+1 far buke
+Mill sipas nevojës
+Nëse i don të ëmbla ves sheqer
+Nëse i don [..] edhe kryp.`,`Tamlin e ngroh tani aty i qet voet edhe zejtinin edhe sheqerin tana ja qet ~~[..]~~ millit.`);
+R("buke","Kifle",`1 kg. mill
+1 kock far të bukës
+1 lug të kafes kryp
+1 lugë të kafes sheqer`,`Me ni tengjere i qet 3 gota të ujit tamël dhe ni got zejtin edhe i len me u nxeh pak me ato e zen brumin. Nuk e zen fort por derisa të mbledhet, e len me ardh. Masane i ban topa të vogla dhe i hollon pak mill në form të kiflës edhe i qet nëse don djath. Kur ti qet në tepsi i len me ardh edhe afër 10 minuta i lyn me voe edhe susam edhe i pjek.
+(N'fletore osht edhe ni variant ma i shkurt: gjys got zejtin edhe 1 [voe?] në vend të 1 got zejtin; i ban kifle, i len me ardh 10 minuta edhe i pjek.)`);
+R("buke","Kifle me margarin",`1 margarin
+1/2 [gjys] litre tamël të vakët
+2 vez
+1 kock far të bukës`,`I zen me tamël dhe i len me ardh. I ban kuleç të vogël i ban në form të kiflave i lyn me të kuqin e vezës dhe me margarin i len edhe pak me ardh dhe i pjek`);
+R("buke","Kifle me vezë e zejtin",`2 vez
+1 l. tamël
+1 lug kryp
+1 lug sheqer
+3 filxhana zejtin
+1 far të bukës
+Mill sipas nevojës`);
+R("buke","Kifle (brumë universal)",null,`Brumë universal nga një recetë në forum. Për 1 kg miell merren 2–3 lugë kripë, 7–10 lugë vaj dhe një kockë maja, e tretur në një filxhan ujë të vakët me 2 lugë miell dhe një lugë kafeje sheqer. Uji i vakët shtohet pak nga pak sa të duhet, dhe brumi zihet derisa të bëhet i butë. I njëjti brumë vlen për kifle, pica dhe piroshka.`);
+R("buke","Kifle shtëpie",`1 kg miell
+20 g kripë
+20 g sheqer
+20 g maja e freskët
+100 ml vaj
+250 ml qumësht i ngrohtë
+250 ml ujë i ngrohtë
+Djathë deleje për mbushje`,`Përgatitja: Zihet brumi dhe lihet të vijë. Pastaj ngjishet përsëri, formohen kiflet dhe mbushen me djathë. Vendosen në tepsi, lihen të vijnë përsëri, lyhen me vezë dhe piqen në furrë të nxehur në 200°C.`);
+R("buke","Kifle të ëmbëla",`1 vezë
+1 peciv
+1 vanill
+10 lug qumsht
+1/2 margarin
+8 lug šečer
+500 gr. mill`,`Brumi: I bën në form të kifleve i lyn me të kučin e ves dhe me susam`);
+R("buke","Milibrod",`3 voe të kuqen e dan
+1 got zejtin
+1 got tamël
+2 gota sheqer
+1 kvasac`,`Mill sa ka nevoj e zen brumin e len 10 minuta me pushu masane e dan në [3 or 9?] topa edhe i len 10 minuta me ardh kana tre kuleç i hollon për në gati i lyn në mes me marmallad edhe i palon mos me u derdh marmallada edhe [..] edhe [..] gjithu nalt i ngjet të trijat edhe i zen si [kocele?] i len pak me ardh i lyn me të kuqin e voes edhe i pjek.`,"E ka shkrue Ylbera [?] Ramadani");
+
+R("pite","Pite me kore të bleme",`500 g. kore për bakllava
+4 vez
+1/2 l. tamël
+200 g. uj të [thartë?]
+300 g. djath me rende
+1 peciv
+Voj [për stërpik?]`,`Së pari i vnon 2 kore pastaj çdo kore e ban me fill dhe palohet e pak e ndrydh në fund përmi i vnon prap 2 kore kore i stërpik me voj.`);
+R("pite","Ndridhe me mill kallamojt",`1 l. tamël pak ma pak të vakët
+700 gr. mill
+2 voje
+1 filxhan zejtin
+Pak krip
+1 peciv`,`I përzim mir edhe e pjek kadal masane e lyn me margarin koren edhe prap e shtin në shporet. Kur ta nxjerrsh e ban copa edhe i qet përmi tlyn.`);
+R("pite","Štrudla",`600 g. kore të bleme
+4 vez
+1,5 g. [kg?] molla
+1 peciv
+1 filxhan griz
+2 filxhana sheqer
+1 filxhan zejtin`,`Krejt këto përzihen dhe e stërpik secilën kore. 4 kore i pshtjell si rollad. Përmbi i lyn me voj dhe stërpiket me uj.`);
+
+R("gjelle","Tavë Elbasani",null,`Mishin e ziem me vaj ulliri mish kingji, në një enë i thejm vezët dhe i qesim kosin dhe krypë i përzim
+Mishin kur e presim e lyjm me vezet, krypë, piper të zi dhe i lyjm pak me mill mandej e shtim me u kavërdis dhe tani e ziejm. ~~[..]~~ Mori të zihet e shtim në kosin me voe dhe e pjek kadal ni orë në furr.`);
+R("gjelle","Qofte",`Pak buk të ftoft
+1 kep
+500 gr. mish të blum
+1 vez
+Krypë, biber të zi
+200 gr. kashkavall
+3 patllixhana`,`Bukën e ~~[..]~~ zbut në ujë pak, qepën e bën me rende, dhe e përzim me mishin edhe vezën e qet, krypën, biberin dhe bukën. Me nxeh furrin në 200 gra[dë], gjysën e kashkavallit e rendon dhe e qet në mish. I bajm 8 qofte dhe i qet në tepsi të lyme me zejtin. Patllixhanat i ban dhe i pren në rrumbullak dhe ia qet qofteve përmi, i pjekim 10 minuta i nxjerim nga furra ia qesim përmi kashkavallin i shtim prap në furr i pjekim deri sa të shkrihet kashkavalli.`);
+R("gjelle","[Pa emën]",`~~1 voe~~
+~~1 got të ujit mill~~
+3-4 lug mill – 1 voe – ~~[..]~~ pak lang të mishit`,`(Anash: Se gjysa gotës krypë kos)
+3 – minuta – [..]`);
+
+R("pica","Pica",`1 far të bukës
+Kryp
+Tamël
+Mill`,`E zen brumin.
+E len me ardh kur të vjen i ban pitet dhe e lyn me keçap ja qet [kaçkavall?] dhe i pjek.`);
+R("pica","Ekspres pica",`200 g. jogurt
+200 g. miell
+4 vez
+1 peciv
+Pak kryp e pak vaj`,`Pastaj përmi i qet çka të dush.`);
+
+R("turshi","Kornishona",`1 litër e gjys uj
+Gjys litre ufëll
+1 filgjan kryp
+Gjys filgjani sheçer
+1 paçet kokra të zeza`,`I vlon kto krejt bashk kastravecat i pastron i shpon ka pak dhe i qet në nji pllastik`);
+
+R("tatli","Havëll me ara",`1 filxhan vaj
+2 filxhana griz
+Ara të grimcume
+3 filxhana sheqer
+4 filxhana ujë
+2 - vanilla`,`(Në temperatur të ult)
+Me ni tenxhere niher qet pak vaj masane e qet grizin edhe arat i përzin me lugë të drurit pa nal derisa ta ndryshojn ngjyrën edhe nis me i ardh era mir masane e qet edhe 1 filxhan vaj dhe vazhdon me përzi pak ma von ja qet sheqerin kur të shkrihet sheqeri e qet ujin dhe përzin non-stop derisa të trashet kur e largom pi shporetit ja qesmi vanillat i japim form dhe i lam me u ftof.`);
+R("tatli","Tatli (1)",`2 vez
+2 filgjana të vogël šečer
+1 e gjys zejtin
+2 lug të kafes kos
+Në maje të luges sod bikarb
+1 vanill
+1 peciv
+Mill sipas nevojës`,`Šerbeti: gjys kille šečer 1 litër uj.`);
+R("tatli","Tatli (2)",`1 vez
+1 got të çajit zejtin
+1 got e gjys sheqer
+1 peciv, ~~[..]~~
+Mill`,`Sherbeti: 1 got të ujit sheqer, 1 got uj.`);
+R("tatli","Tatli (3)",`3 gota zejtin të çajit
+3 gota të çajit sheqer
+3 vez
+1 peciv
+1 vanill
+Mill deri sa të bahet brum`,`Masane e dan brumin edhe gjysën i qet kakao, edhe i ban ni [..].
+Sherbeti: 1 tegjill e gjys uj, 1 tegjill sheqer [..] të [..].`);
+R("tatli","Tatli me got të çajit",null,`1 margarin kristall e shkrim edhe e len me u ftof 2 vez veç të [kuqit?] edhe 1 vez cella. 1 got të çajit sheqer, 1 got të çajit zejtin, 1 peciv edhe mill deri sa të bahet brumi edhe i ban të rrumbullakta kuleç edhe tani i pren me got të çajit.
+Sherbeti: 3 gota të ujit sheqer edhe 2 uj i vlon masane i len me u vak edhe tatlitë edhe sherbetin edhe ia qet tatlive.`);
+R("tatli","Tatli me ara (1)",`3 vez
+1 got të ujit tamël
+1 got griz
+1 got sheqer
+Gjys gote zejtin
+1 got mill
+1 peciv dhe ara e rrush të that.`,`I thej 3 vez i qet sheqerin i përzim masane tamlin e zejtinin i përzim, tani grizin edhe tjerat i qet tu i përzi.
+Tepsinë e lyn me zejtin dhe pak mill e pjek.
+Sherbeti: 3 gota sheqer dhe 2 uj.`);
+R("tatli","Tatli me ara (2)",`3 vez
+1 got të ujit tamël
+1 got griz
+1 got sheqer
+Gjys gote zejtin
+1 got mill
+1 peciv dhe ara`,`I then 3 vez ja qet sheqerin i përzim tani tamlin dhe zejtinin i përzim tani grizin dhe tjerat i qet tu i përzi. Tepsinë e lyn me zejtin edhe me pak mill dhe e pjek.
+Sherbeti: 3 gota sheqer 2 uj.`);
+R("tatli","Šečer pare",null,`2 voe – sa osht masa e voeve në got çaç i çet në got zejtin e sheqer ni peciv ni vanill edhe e zen brumin
+Sherbeti: ma pak se 1 kg. shečer dhe 700 dl. uj.
+Të dyjat të nxeta.`);
+R("tatli","Šampite",null,`6 të kuqa të vës i përzin me 6 lug šeqer, 6 lug miell, 8 lug tamël, 7 lug voj, 1 peciv.
+1/2 kg. šeqer me 2 filxhana uj dhe 1 vanill i len me vlu. Përzihen 6 të bardha të vës dhe ka pak i qitet sherbeti në to.`);
+R("tatli","Torta me molla me sherbet",`4 voje
+1 got sheqer
+1 got tamël
+1 got mill + 1 paket griz
+2 peciva
+200 gr. ara
+200 gr. rrush të thatë
+2 molla me rende`,`Voet edhe sheqerin i përzim deri sa të shkrihet sheqeri, pastaj tjerat.
+Sherbeti: 2 bardak sheqer 1 got e gjys uj. Mbasi ta pjeksh, torta e ftoft sherbeti i nxet. Edhe përmi në çokollad.`);
+
+R("torte","Tort",null,`1 brum: 2 voje, 4 lug sheqer, 4 lug mill i përzim mir edhe i pjek, edhe i qet pak tamël me [..] edhe brumi i dyt njisoj edhe në mes i qet ose shllag ose puding. Përmi e lyn prap me shllag edhe me çokollad edhe e dekoron me çka të dush.`);
+R("torte","Tort me shllag – Maçmallou",`4 vez
+12 lug sheqer
+12 lug mill
+12 lug tamël
+12 lug zejtin
+1 peciv
+3 lug kakao`,`I përzim mir me mikser edhe e shtim me pjek.
+Sherbeti: 2 gota ujë dhe 9 lug sheqer.
+Shllogi: 2 shllaga, 2 gota tamël, 4 lug sheqer.
+Ni çokollad e shkrim edhe i qet pak tamël e pak zejtin edhe ja qet përmi.`);
+R("torte","Maçmallou",null,`6 ~~lug~~ të kuqa të vës i përzim me 150 g. şeqer, 300 g. tamël 125 g. zejtin, 300 g. miell, 1 peciv dhe 2 lug kakao.
+Fil: 6 të bardha të vës i përzim me 18 lug sheqer pluhur dhe lyhet torta. ~~Dhe e lyjm~~ e pjek edhe pak dhe në fund lyhet me çokolladë.`);
+R("torte","Indijanka",null,`5 vez, përzihen me 150 g. šeqer, i qet 200 g. miell dhe gjys pecive. Pjekset në tepsi me letër posht.
+Fil: 1/2 l. uj dhe 300 g. šeqer me vlue. Në një pjat të përzihen 1 vez dhe 150 g. miell dhe me pak prej ujit mos të ket kokra, pastaj i len me vlue krejt bashk. Kur të ftofet i qet 1 margarin dhe përzihen krejt bashk. Filli ndahet në 2 pjes. Në njërin fill qitet kakao. Në fillim e bardh lyhen së pari e pastaj me fillin e kaft përmi me [shpatull?].`);
+R("torte","Tortë me hurma",`10 vezë
+10 lugë sheqer
+5 lugë miell
+250 g sheqer pluhur
+250 g margarinë
+200 g arra
+100 g lajthi
+200 g hurma`,`(Për dy doza)
+Përgatitja: Të bardhat e vezëve rrihen me sheqerin derisa të forcohen. Pastaj shtohen mielli, arrat, lajthitë dhe hurmat e grira, dhe piqen tri kore veç e veç. Të verdhat gatuhen me sheqer pluhur në avull ose në zjarr të ulët derisa të trashen. Pasi ftohet kremi, rrihet margarina dhe i shtohet. Koret mbushen me krem dhe torta zbukurohet me shllag.`);
+R("torte","Rollat me gjem",`6 vez
+6 lug miell
+6 lug šečer
+1 peciv
+1 vanill`,`E përzin me mikser edhe e štin me pjek. Kur të pjeket e mer ni salfetk e lag edhe e čet rollatin përmbi edhe ni sallfetk të lagt përmi rollat, kur ta hjek sallfetkën e lyn me xhem edhe e bën në form të rollatit edhe i čet šečer pluhur.`);
+R("torte","Kek",`4 vezë
+6 filxhanë sheqer
+3 filxhanë vaj
+4 filxhanë ujë të vakët
+10 filxhanë miell
+1 peciv`);
+R("torte","Pite me xhem",`500 gr. miell
+500 gr. sheqer
+4 vezë
+1 peciv
+1 vanilje
+250 ml. qumësht
+200 ml. vaj`,`(Si bahet osht e grisun n'fletore, s'po lexohet.)`);
+R("torte","Eklera",`2 gota uj
+1 got voj
+6 lug të mbushura me miell
+5 vez`,`Uji dhe voji duhët me vlu, i largon anësh, mielli që është gati ja qet 1 nga 1 lug dhe i përzim. Kur të ftofet i qet vezët 1 nga 1, 5 vez dhe mir përzihen me lug të drunit.
+Fil: 20 lug šeqer, 1 [l.] tamël, 3 të kuqe të ves, 1 gustin, 5 lug miell. Përmi lyhen me çokolladë.`);
+
+R("pjekje","Tort me lang vishnje",`Nisheste
+1 litër tamël
+Sheqer
+Lang vishnje
+Piskota`,`Në tepsi kock e qet harxhine par: 9 lug nisheste 9 lug sheqer dhe 9 lug qumësht qumshtin 1 litër e vlon edhe kit harxhin 9 lug nisheste 9 lug sheqer 9 lug tamël i përzin krejt edhe kadal ja qet tu i përzi në qumësht kur të trashet si puding e qet në tepsi e përmi ja renit piskotat tana harxhin e dyt: 9 lug nisheste, 9 lug sheqer dhe 9 lug lang vishnje kto i përzin krejt me ni tengjere e vnon at 1 litër lang vishje me vlu pak edhe ja qet ~~[..]~~ harxhin kur të trashet e qet përmi piskota edhe e pret në kocka`);
+R("pjekje","Tort me piskota e puding",null,`E maron ni puding me gjys litër tamël [çfarë?] të dush e merr gjys kile piskota edhe në puding mundesh me qit edhe zhele e rrush të that masane me lug pudingën i nxet i qet në mes të piskotave edhe i renit në [..], vertikalisht nga dy piskota. Në fund pudingën që mbet ja qet përmi edhe ni çokollad të shkrime e qet përmi.`);
+R("pjekje","Tort me piskota e banane",`300 gr. piskota
+3 puding të çokolladës
+250 gr. sheqer
+1 litër tamël
+1 [..]`,`Së pari e marim tamlin e vendosim me vlu edhe [..] sheqerin [..] pudingat [..] tamël [..] piskotat [..] bananet [..] çokolladë.`);
+R("pjekje","Tort me piskota",`250 gr. puter
+250 gr. şeçer pluhur
+250 gr piskota të bluara
+Zhele
+Rrush të that`,`Puterin edhe sheqerin i përzim mir me mikser masane ja qet zhelet e premë në kocka të vogla edhe e qet edhe rrushin e that e në fund edhe piskotat. I përzim mir dhe i qet në ndonjë [enë?] e bëm në form të katrorit edhe e prem në kocka të vogla.`);
+
+R("kolace","Gurabia",`3 voje
+1 margarin
+1 bartak zejtin
+1 bartak sheqer pluhur
+1 bartak rrush të thatë
+1 bartak arra
+2 peciva
+1 cimet`,`Mill sa ~~ta~~ zjeh ~~[..]~~ ~~[..]~~ brumin. I ban gogllaça i shtin me i pjek [k]ur ti nxjerrin opet i shtin në sheqer pluhur`,"E ka bërë Ylbera [?] Ramadani");
+R("kolace","Gurabija – mami",`1 margarin e dan me thik
+1 filxhan kos
+2 voe
+1 të gjamit ~~[..]~~ me sheçer
+1 peciv
+Mil`,`E ban brum i dan në kuleç dhe i shtin i pjek`);
+R("kolace","Gurabija",`2 vez
+2 gota sheqer
+1 got zejtin
+1 got tamël
+1 peciv
+Mill sipas nevojës`);
+R("kolace","Pješka",`[1/2 or 2?] vezë
+200 gr. šeçer (1 got e gjys)
+1 margarin
+500 gr. miel
+1 peciv`,`E zen si brum.
+E zen brumin e t'hollon format i çep me got të çajit masi të pjeken i lyn me gjem i bën nji me nji edhe i lyn me šečer pluhur.`);
+R("kolace","Vaflla",`2 gota zejtin
+1 got ujë
+1 peciv
+Mill sipas nevojes`,`I përzim i bam brum.
+Brumin e rit e ban pet dhe e pret me got të ujit mandej i lyn me marmallad i kthen niher dhe i pjek në 180°C. Kur të ftofen i lyn me sheçer pluhën.`);
+R("kolace","Bombica (1)",`1/2 keksa të blume
+5 lug sheqer pluhur
+4 lug kakao
+2 vez
+1 [paket?] kokos
+130 gr. margarin
+1 vanillë
+Pak tamël`);
+R("kolace","Bombica (2)",`300 gr. piskota
+Gjys margarini
+1 filxhan e gjys tamël
+Edhe pak ara.`,`Krejt këto i ban ni brum i ngjesh mir edhe i ban në formë të topave.
+1 çokollad e shkrin me pak tamël edhe i lyn bombicat. Në fund mundesh me i rrokullis edhe në ara të blume.`);
+R("kolace","Bombica me çokollad",`100 ml. ujë
+200 gr. šeqer
+200 gr. ara të blume
+200 gr. piskota të blume
+1 çokollad për shkrirje
+[Kajthija?]`,`Ujin e vnojmi me vlu dhe ia qesim sheqerin kur të shkrihet e të bahet sherbet e largojm nga shporeti dhe ia qesim piskotat e blume e dhe përziem e pastaj i qesim edhe arat e blume edhe i përzimi mir me lug të drunit.
+Prej këti brumi formojmë topa, me ni tengjere e qesim çokolladën me shkri në avull, kur të shkrihet e largojm dhe me lug i qesim kalupave të letrës çokollad edhe e vnojm nga ni top prej brumit përmi qesim prap çokollad dhe nga një [kajthi?].`);
+R("kolace","[Pa emën]",`Sheçer pluhur – 200 gr
+2 voe – të bardhat
+2 – vanilla
+Lešnik 200 gr – të blume
+1 çokollad`,`Çokolladën e rendon i qet lešnikët sheçer pluhur dhe ~~[..]~~ 2 vanilla e 2 të bardha të voes.
+Gjysën e çokolladës e shkrin.`);
+
+R("tjera","Maskë për fytyrë",null,`Pritni një kastravec në rrathë dhe vendoseni në një enë me qumësht, e lëreni të qëndrojë [1 orë?]. Njomni pambuk dhe pastroni fytyrën. Kur të thahet lëkura, vendosni rrathët e kastravecit dhe i lini [10?] minuta. Pastaj lani fytyrën me ujë të ngrohtë.
+~~Maskë me [mollë?]~~ (osht e vizatume n'fletore; fillon me "Qëroni dhe grini 1 mollë…", tjetra s'lexohet)`);
+
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function fmt(s){
+  let h=esc(s);
+  h=h.replace(/~~(.+?)~~/g,"<del>$1</del>");
+  h=h.replace(/\[([^\]]*)\]/g,'<span class="unc">[$1]</span>');
+  if(/^\(.*\)$/.test(s.trim())) return '<span class="note">'+h+'</span>';
+  h=h.replace(/^(Sherbeti|Šerbeti|Fil|Shllogi|Përgatitja|Brumi|1 brum):/,'<span class="lbl">$1:</span>');
+  return h;
+}
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/ş/g,"s");
+
+let cat="all";
+const list=document.getElementById("list"),q=document.getElementById("q"),pills=document.getElementById("pills");
+document.getElementById("count").textContent=D.length+" recepta";
+
+function renderPills(){
+  const all=[["all","Krejt receptat"]].concat(CATS.map(c=>[c[0],c[1]]));
+  pills.innerHTML=all.map(([id,l])=>{
+    const n=id==="all"?D.length:D.filter(r=>r.c===id).length;
+    return `<button class="pill" type="button" data-c="${id}" aria-pressed="${id===cat}">${l}<b>${n}</b></button>`;
+  }).join("")+`<button class="pill" type="button" data-c="units" aria-pressed="${cat==="units"}">Masat</button>`;
+}
+function card(r){
+  const ing=r.i.length?"<ul>"+r.i.map(l=>"<li>"+fmt(l)+"</li>").join("")+"</ul>":"";
+  const txt=r.x.map(p=>"<p>"+fmt(p)+"</p>").join("");
+  const sig=r.s?'<p class="sig">'+fmt(r.s)+"</p>":"";
+  return `<details class="card"><summary><h2>${fmt(r.t)}</h2><span class="chev" aria-hidden="true"></span></summary><div class="body">${ing}${txt}${sig}</div></details>`;
+}
+const UNITS=`<section class="units"><h3>Masat n'fletore</h3><dl>
+<dt>Filxhan</dt><dd>filxhan i kafes, afër 60–80 ml</dd>
+<dt>Got të ujit</dt><dd>got e ujit, afër 200–250 ml</dd>
+<dt>Got të çajit</dt><dd>got e çajit, afër 100–150 ml</dd>
+<dt>Bardak / bartak</dt><dd>got e madhe, afër 250 ml</dd>
+<dt>Tegjill</dt><dd>en për me mat, zakonisht afër 200 ml</dd>
+<dt>Lug</dt><dd>lug e gjellës</dd>
+<dt>Lug të kafes</dt><dd>lug e vogël e kafes</dd>
+<dt>Peciv</dt><dd>1 qese pecivo (afër 10–12 g)</dd>
+<dt>Far / kock far</dt><dd>far buke, 1 kock e njom (afër 40 g) ose 1 qese e that</dd>
+<dt>Vanill</dt><dd>1 qese sheqer vanill</dd>
+<dt>Tamël</dt><dd>qumsht</dd>
+<dt>Voe / vez</dt><dd>vez</dd>
+</dl><p class="note" style="margin-top:8px">Masat jan përafërsisht, sipas enëve që i kem n'shpi.</p></section>`;
+
+function render(){
+  const term=norm(q.value.trim());
+  if(cat==="units"&&!term){list.innerHTML=UNITS;return}
+  const hit=r=>!term||norm(r.t+" "+r.i.join(" ")+" "+r.x.join(" ")).includes(term);
+  let html="";
+  CATS.forEach(([id,,full])=>{
+    if(cat!=="all"&&cat!=="units"&&cat!==id)return;
+    const rs=D.filter(r=>r.c===id&&hit(r));
+    if(!rs.length)return;
+    html+=`<div class="sec">${full}</div>`+rs.map(card).join("");
+  });
+  list.innerHTML=html||'<p class="empty">S’u gjet kurrgjo për “'+esc(q.value)+'”.</p>';
+  if(term)list.querySelectorAll("details").forEach(d=>d.open=true);
+}
+pills.addEventListener("click",e=>{
+  const b=e.target.closest(".pill");if(!b)return;
+  cat=b.dataset.c;q.value="";renderPills();render();window.scrollTo({top:0});
+  try{localStorage.setItem("fr-cat",cat)}catch(_){}
+});
+q.addEventListener("input",render);
+
+// Keep screen on while cooking (optional; ignored if the browser refuses)
+let lock=null;const wb=document.getElementById("wake");
+wb.addEventListener("click",async()=>{
+  if(lock){try{await lock.release()}catch(_){}lock=null;wb.setAttribute("aria-pressed","false");return}
+  try{lock=await navigator.wakeLock.request("screen");wb.setAttribute("aria-pressed","true");
+    lock.addEventListener("release",()=>{lock=null;wb.setAttribute("aria-pressed","false")});
+  }catch(_){wb.textContent="S'bon n'kët telefon";setTimeout(()=>wb.textContent="Mos e fik ekranin",2000)}
+});
+
+try{const s=localStorage.getItem("fr-cat");if(s)cat=s}catch(_){}
+renderPills();render();
+</script>
+
+</body>
+</html>
